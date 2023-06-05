@@ -399,3 +399,16 @@ export async function writeEnvScript(
   lines.push(`export PATH=${pathdirs.join(':')}:$PATH\n`)
   await Deno.writeTextFile(localenvpath, lines.join(""));
 }
+
+/// Install the requested software to the given directory. Only do this
+/// if needed, based upon the last written mantifest file.
+export async function installTo(installs: Installable[], toDir: string) {
+  if (await checkManifest(installs, toDir)) {
+    return;
+  }
+  for (const i of installs) {
+    await i.install(toDir);
+  }
+  await writeEnvScript(installs, toDir);
+  await writeManifest(installs, toDir);
+}
