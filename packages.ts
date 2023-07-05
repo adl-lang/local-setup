@@ -276,6 +276,24 @@ export function awscli(version: string): MultiPlatform<Installable> {
   };
 }
 
+// Foundry
+//
+export function foundry(version: string): MultiPlatform<Installable> {
+  const urls : MultiPlatform<DownloadFile> =
+  {
+    linux_x86_64: {
+      url: `https://github.com/foundry-rs/foundry/releases/download/${version}/foundry_nightly_linux_amd64.tar.gz`,
+      cachedName: `foundry_${version}_linux_amd64.tar.gz`,
+    },
+    darwin_x86_64: {
+      url: `https://github.com/foundry-rs/foundry/releases/download/${version}/foundry_nightly_darwin_arm64.tar.gz`,
+      cachedName: `foundry_${version}_darwin_arm64.tar.gz`,
+    },
+  };
+
+  return mapPlatform(urls, url => tarPackage(url, '--gzip', 'bin'));
+}
+
 
 // Pulumi
 //
