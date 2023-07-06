@@ -1,4 +1,22 @@
-Utility code to support installing locally scoped development tools
+Utility code to support installing locally scoped and versioned development tools
+
+# Supported tools
+
+The following tools can be installed with this system
+
+* [deno](https://deno.land/)
+* [nodejs](https://nodejs.org/)
+* [pnpm](https://pnpm.io/)
+* [adoptopenjdk](https://adoptium.net/en-GB/)
+* [bazel](https://bazel.build/)
+* [gradle](https://gradle.org/)
+* [yarn](https://github.com/yarnpkg/yarn/releases)
+* [terraform](https://www.terraform.io/)
+* [adl](https://github.com/adl-lang/adl)
+* [awscli](https://aws.amazon.com/cli/)
+* [foundry](https://github.com/foundry-rs/foundry)
+* [pulumi](https://www.pulumi.com/)
+
 
 # Project setup
 
