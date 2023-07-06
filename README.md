@@ -51,7 +51,7 @@ main()
   });
 ```
 
-copy the [wrapper shell script][example/local-setup.sh] to `./deno/local-setup.sh` 
+copy the [wrapper shell script](example/local-setup.sh) to `./deno/local-setup.sh` 
 
 Add `.local` to the project gitignore
 
