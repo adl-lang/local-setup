@@ -78,7 +78,7 @@ Add `.local` to the project gitignore
 In a project, just source the shell script:
 
 ```
-$ . deno.local-setup.sh
+$ . deno/local-setup.sh
 ```
 
 This will download the tools, install them to `.local` and put them on

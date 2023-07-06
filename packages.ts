@@ -286,8 +286,8 @@ export function foundry(version: string): MultiPlatform<Installable> {
       cachedName: `foundry_${version}_linux_amd64.tar.gz`,
     },
     darwin_x86_64: {
-      url: `https://github.com/foundry-rs/foundry/releases/download/${version}/foundry_nightly_darwin_arm64.tar.gz`,
-      cachedName: `foundry_${version}_darwin_arm64.tar.gz`,
+      url: `https://github.com/foundry-rs/foundry/releases/download/${version}/foundry_nightly_darwin_amd64.tar.gz`,
+      cachedName: `foundry_${version}_darwin_amd64.tar.gz`,
     },
   };
 
