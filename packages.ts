@@ -10,6 +10,7 @@ import {
   mapPlatform,
   MultiPlatform,
   setVariable,
+  setAlias,
   addToPath,
   unPackage,  
   tarPackage,
@@ -212,7 +213,7 @@ export function terraform(version: string): MultiPlatform<Installable> {
     },
   };
 
-  return mapPlatform(urls, (url) => tarPackage(url, '--gzip'));
+  return mapPlatform(urls, zippedBinary);
 }
 
 // standard ADL tooling
@@ -258,6 +259,10 @@ export function awscli(version: string): MultiPlatform<Installable> {
           path.join(localdir, "lib/aws/dist/aws"),
           path.join(localdir, "bin/aws"),
         );
+        await fs.ensureSymlink(
+          path.join(localdir, "lib/aws/dist/aws_completer"),
+          path.join(localdir, "bin/aws_completer"),
+        );
       },
       env: () => [],
     },
@@ -269,6 +274,10 @@ export function awscli(version: string): MultiPlatform<Installable> {
         await fs.ensureSymlink(
           path.join(localdir, "lib/aws-cli/aws"),
           path.join(localdir, "bin/aws"),
+        );
+        await fs.ensureSymlink(
+          path.join(localdir, "lib/aws-cli/aws_completer"),
+          path.join(localdir, "bin/aws_completer"),
         );
       },
       env: () => [],

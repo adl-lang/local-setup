@@ -32,6 +32,8 @@ export interface Installable {
 type EnvAction 
   = {kind: 'setVariable', variable: string, value: string}
   | {kind: 'addToPath', directory: string}
+  | {kind: 'setAlias', cmd: string, alias: string}
+  // | {kind: 'completion', cmd: string, alias: string}
 
 export function setVariable( variable: string, value: string) : EnvAction {
   return {kind:'setVariable', variable, value};
@@ -39,6 +41,10 @@ export function setVariable( variable: string, value: string) : EnvAction {
 
 export function addToPath(directory: string) : EnvAction {
   return {kind:'addToPath',directory};
+}
+
+export function setAlias(cmd: string, alias: string) : EnvAction {
+  return {kind:'setAlias', cmd, alias};
 }
 
 export function forPlatform<T>(multi: MultiPlatform<T>, platform: Platform): T {
@@ -122,6 +128,7 @@ export function binary(dfile: DownloadFile, name: string): Installable {
       const target = path.join(localdir, "bin", name);
       await Deno.copyFile(src, target);
       await Deno.chmod(target, 0o755);
+      console.log(`copied binary ${src}`);
     },
     env: () => [],
   };
@@ -195,6 +202,9 @@ export async function cachedDownload(
   if (!cacheFileExists) {
     console.log(`fetching ${downloadFile.url}`);
     const rsp = await fetch(downloadFile.url);
+    if ( rsp.status < 200 || rsp.status >= 300 ) {
+      throw new Error(`error fetching file. Status ${rsp.statusText} url ${downloadFile.url}`);
+    }
     const rdr = rsp.body?.getReader();
     if (rdr) {
       const r = readerFromStreamReader(rdr);
@@ -390,6 +400,9 @@ export async function writeEnvScript(
           break;
         case 'addToPath':
           pathdirs.push(action.directory)
+          break;
+        case 'setAlias':
+          lines.push(`alias ${action.cmd}='${action.alias}'\n`)
           break;
       }
     }
