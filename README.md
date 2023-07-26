@@ -36,50 +36,13 @@ import {
   packages,
   forPlatform,
   getHostPlatform,
-  installTo,
-  mapPlatform,
-  MultiPlatform,
-  DownloadFile,
-  Installable,
-  withEnv,
-  setAlias,
-  binary
+  installTo
 } from "https://deno.land/x/adllang_localsetup@v0.6/mod.ts";
 
-// local package def for WIP Rust ADL tooling
-function radlc(gh_org: string, version: string): MultiPlatform<Installable> {
-  const urls: MultiPlatform<DownloadFile> = {
-    linux_x86_64: {
-      url:
-        `https://github.com/${gh_org}/adl/releases/download/rust%2Fcompiler%2Fv${version}/radlc-v${version}-linux`,
-      cachedName: `radlc-${version}-linux`,
-    },
-    darwin_x86_64: {
-      url:
-        `https://github.com/${gh_org}/adl/releases/download/rust%2Fcompiler%2Fv${version}/radlc-v${version}-osx`,
-      cachedName: `radlc-${version}-osx`,
-    },
-  };
-  function install(url: DownloadFile): Installable {
-    return binary(url, 'radlc');
-  }
-  return mapPlatform(urls, install);
-}
-
-const platform = getHostPlatform();
-function withPlatform<T>(multi: MultiPlatform<T>) {
-  return forPlatform(multi, platform)
-}
-
-const DENO = withPlatform(packages.deno("1.34.1"));
-const NODE = withPlatform(packages.nodejs("18.16.0"));
+const DENO = packages.deno("1.34.1");
+const NODE = packages.nodejs("18.16.0");
 const YARN = packages.yarn("1.22.19");
-const PNPM = withEnv(withPlatform(packages.pnpm("8.1.1")), () => [
-  setAlias("npm", "echo \"using pnpm\"; pnpm"),
-  setAlias("pn", "pnpm"),
-]);
-const ADL = withPlatform(packages.adl("1.1.12"));
-const RADL = withPlatform(radlc("millergarym","0.0.10"));
+const ADL = packages.adl("1.1.12");
 
 export async function main() {
   if (Deno.args.length != 1) {
@@ -88,13 +51,12 @@ export async function main() {
   }
   const localdir = Deno.args[0];
 
+  const platform = getHostPlatform();
 
   const installs = [
-    DENO,
-    NODE,
-    ADL,
-    RADL,
-    PNPM,
+    forPlatform(DENO, platform),
+    forPlatform(NODE, platform),
+    forPlatform(ADL, platform),
     YARN,
   ];
 
@@ -111,6 +73,11 @@ copy the [wrapper shell script](example/local-setup.sh) to `./deno/local-setup.s
 
 Add `.local` to the project gitignore
 
+For a more complex example see [the included local-setup.ts](example/local-setup.ts).
+This included;
+* a locally defined package, and
+* having a package adding aliases to the environment.
+
 # Usage
 
 In a project, just source the shell script:
@@ -125,7 +92,7 @@ the path in the current shell.
 # Local Dev
 
 To work on and use a local version of local-setup you can do the following;
-* [fork the repo](https://github.com/adl-lang/local-setup/fork) and clone it (potentially as a git submodule)
+* clone repo (potentially as a git submodule e.g. `git submodule add git@github.com:adl-lang/local-setup.git deno/patched/local-setup`)
 * use an `import` in override the `deno.json` file to override the deno package with your local copy.
 
 For example if your fork was clone as a submodule into `deno/patched/local-setup` your `deno.json` would look like;
