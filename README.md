@@ -91,9 +91,17 @@ the path in the current shell.
 
 # Local Dev
 
-To work on and use a local version of local-setup you can do the following;
-* clone repo (potentially as a git submodule e.g. `git submodule add git@github.com:adl-lang/local-setup.git deno/patched/local-setup`)
-* use an `import` in override the `deno.json` file to override the deno package with your local copy.
+To work on and use a local version of local-setup you can clone repo, potentially as a git submodule e.g. 
+```
+git submodule add git@github.com:adl-lang/local-setup.git deno/patched/local-setup
+```
+
+Either change the import in `local-setup.sh`
+``` patch
+-} from "https://deno.land/x/adllang_localsetup@v0.6/mod.ts";
++} from "./patched/local-setup/mod.ts";
+```
+Or use an `import` in override the `deno.json` file to override the deno package with your local copy.
 
 For example if your fork was clone as a submodule into `deno/patched/local-setup` your `deno.json` would look like;
 
