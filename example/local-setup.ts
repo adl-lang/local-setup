@@ -10,7 +10,7 @@ import {
   withEnv,
   setAlias,
   binary
-} from "https://deno.land/x/adllang_localsetup@v0.6/mod.ts";
+} from "https://deno.land/x/adllang_localsetup@v0.8/mod.ts";
 
 // Rust ADL tooling
 function radlc(gh_org: string, version: string): MultiPlatform<Installable> {
