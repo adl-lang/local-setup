@@ -317,6 +317,10 @@ export function pulumi(version: string): MultiPlatform<Installable> {
       url: `https://get.pulumi.com/releases/sdk/pulumi-v${version}-darwin-x64.tar.gz`,
       cachedName: `pulumi-v${version}-darwin-x64.tar.gz`,
     },
+    darwin_aarch64: {
+      url: `https://get.pulumi.com/releases/sdk/pulumi-v${version}-darwin-arm64.tar.gz`,
+      cachedName: `pulumi-v${version}-darwin-arm64.tar.gz`
+    },
   };
 
   return mapPlatform(urls, url => withEnv(tarPackage(url, '--gzip'), (localdir) => [
