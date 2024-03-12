@@ -221,13 +221,18 @@ export function adl(version: string): MultiPlatform<Installable> {
   const urls: MultiPlatform<DownloadFile> = {
     linux_x86_64: {
       url:
-        `https://github.com/adl-lang/adl/releases/download/v${version}/adl-bindist-${version}-linux.zip`,
-      cachedName: `adl-bindist-${version}-linux.zip`,
+        `https://github.com/adl-lang/adl/releases/download/v${version}/adl-bindist-${version}-linux-x64.zip`,
+      cachedName: `adl-bindist-${version}-linux-x64.zip`,
     },
     darwin_x86_64: {
       url:
-        `https://github.com/adl-lang/adl/releases/download/v${version}/adl-bindist-${version}-osx.zip`,
-      cachedName: `adl-bindist-${version}-osx.zip`,
+        `https://github.com/adl-lang/adl/releases/download/v${version}/adl-bindist-${version}-macos-x64.zip`,
+      cachedName: `adl-bindist-${version}-macos-x64.zip`,
+    },
+    darwin_aarch64: {
+      url:
+        `https://github.com/adl-lang/adl/releases/download/v${version}/adl-bindist-${version}-macos-arm64.zip`,
+      cachedName: `adl-bindist-${version}-macos-arm64.zip`,
     },
   };
 
