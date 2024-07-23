@@ -290,6 +290,29 @@ export function awscli(version: string): MultiPlatform<Installable> {
   };
 }
 
+// for current versions see https://console.cloud.google.com/storage/browser/cloud-sdk-release;tab=objects?pageState=(%22StorageObjectListTable%22:(%22f%22:%22%255B%255D%22,%22s%22:%5B(%22i%22:%22objectListDisplayFields%2FtimeCreated%22,%22s%22:%221%22),(%22i%22:%22displayName%22,%22s%22:%220%22)%5D))&prefix=&forceOnObjectsSortingFiltering=true
+export function gcloud(version: string): MultiPlatform<Installable> {
+  const urls : MultiPlatform<DownloadFile> =
+  {
+    linux_x86_64: {
+      url: `https://storage.googleapis.com/cloud-sdk-release/google-cloud-cli-${version}-linux-x86_64.tar.gz`,
+      cachedName: `google-cloud-cli-${version}-linux-x86_64.tar.gz`,
+    },
+    darwin_x86_64: {
+      url: `https://storage.googleapis.com/cloud-sdk-release/google-cloud-cli-${version}-darwin-x86_64.tar.gz`,
+      cachedName: `google-cloud-cli-${version}-darwin-x86_64.tar.gz`,
+    },
+    darwin_aarch64: {
+      url: `https://storage.googleapis.com/cloud-sdk-release/google-cloud-cli-${version}-darwin-arm.tar.gz`,
+      cachedName: `google-cloud-cli-${version}-darwin-arm.tar.gz`,
+    },
+  };
+
+  return mapPlatform(urls, url => withEnv(tarPackage(url, '--gzip'), (localdir) => [
+    addToPath(path.join(localdir,`google-cloud-sdk/bin`)),
+  ]));
+}
+
 // Foundry
 //
 export function foundry(version: string): MultiPlatform<Installable> {
