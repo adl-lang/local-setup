@@ -12,7 +12,7 @@ import {
   setVariable,
   setAlias,
   addToPath,
-  unPackage,  
+  unPackage,
   tarPackage,
   unzip,
   withEnv,
@@ -32,6 +32,11 @@ export function deno(version: string): MultiPlatform<Installable> {
     darwin_x86_64: {
       url:
         `https://github.com/denoland/deno/releases/download/v${version}/deno-x86_64-apple-darwin.zip`,
+      cachedName: `deno-v${version}-x86_64-apple-darwin.zip`,
+    },
+    darwin_aarch64: {
+      url:
+        `https://github.com/denoland/deno/releases/download/v${version}/deno-aarch64-apple-darwin.zip`,
       cachedName: `deno-v${version}-x86_64-apple-darwin.zip`,
     },
   };
@@ -119,12 +124,12 @@ export function adoptopenjdk(version: string): MultiPlatform<Installable> {
   }
 
   return {
-    linux_x86_64: 
+    linux_x86_64:
       withEnv(tarPackage(urls.linux_x86_64, '--gzip'), (localdir) => [
         setVariable("JAVA_HOME", path.join(localdir, `jdk-${version}`)),
         addToPath(path.join(localdir,  `jdk-${version}/bin`)),
       ]),
-    darwin_x86_64:  
+    darwin_x86_64:
       // Sigh... the macos jdk has Contents/Home as a prefix in the tar file,
       withEnv(tarPackage(urls.darwin_x86_64, '--gzip'), (localdir) => [
         setVariable("JAVA_HOME", path.join(localdir, `jdk-${version}/Contents/Home`)),
@@ -181,7 +186,7 @@ export function gradle(version: string): Installable {
 
   return withEnv(zippedPackage(url), (localdir) => [
     addToPath(path.join(localdir,`gradle-${version}/bin`)),
-  ])   
+  ])
 }
 
 
@@ -195,7 +200,7 @@ export function yarn(version: string): Installable {
 
   return withEnv(tarPackage(url, '--gzip'), (localdir) => [
     addToPath(path.join(localdir,`yarn-v${version}/bin`)),
-  ])      
+  ])
 }
 
 // Terraform installable
@@ -362,4 +367,3 @@ export function dnit(version: string): Installable {
     `https://deno.land/x/dnit@dnit-v${version}/main.ts`,
   );
 }
-
