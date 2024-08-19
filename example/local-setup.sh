@@ -18,9 +18,14 @@ pathadd() {
 
 pathadd $localbin
 
+
 if [ "`uname`" = "Darwin" ]; then
   platform=osx
-  arch=x86_64-apple-darwin
+  if [ "`arch`" = "arm64" ]; then
+    arch=aarch64-apple-darwin
+  else
+    arch=x86_64-apple-darwin
+  fi
   cachedir=$HOME/Library/Caches/localtools
 elif [ "$(expr substr $(uname -s) 1 5)" = "Linux" ]; then
   platform=linux
