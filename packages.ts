@@ -101,19 +101,21 @@ export function pnpm(version: string): MultiPlatform<Installable> {
 
   return mapPlatform(urls, install);
 }
+
 // adoptopenjdk installable
 export function adoptopenjdk(version: string): MultiPlatform<Installable> {
+  const major = version.substring(0, version.indexOf("."))
   const uversion = version.replace('+','_');
   const urls: MultiPlatform<DownloadFile> = {
     linux_x86_64: {
       url:
-        `https://github.com/adoptium/temurin11-binaries/releases/download/jdk-${version}/OpenJDK11U-jdk_x64_linux_hotspot_${uversion}.tar.gz`,
-      cachedName: `OpenJDK11U-jdk_x64_linux_hotspot_${uversion}.tar.gz`,
+        `https://github.com/adoptium/temurin${major}-binaries/releases/download/jdk-${version}/OpenJDK${major}U-jdk_x64_linux_hotspot_${uversion}.tar.gz`,
+      cachedName: `OpenJDK${major}U-jdk_x64_linux_hotspot_${uversion}.tar.gz`,
     },
     darwin_x86_64: {
       url:
-        `https://github.com/adoptium/temurin11-binaries/releases/download/jdk-${version}/OpenJDK11U-jdk_x64_mac_hotspot_${uversion}.tar.gz`,
-      cachedName: `OpenJDK11U-jdk_x64_mac_hotspot_${uversion}.tar.gz`,
+        `https://github.com/adoptium/temurin${major}-binaries/releases/download/jdk-${version}/OpenJDK${major}U-jdk_x64_mac_hotspot_${uversion}.tar.gz`,
+      cachedName: `OpenJDK${major}U-jdk_x64_mac_hotspot_${uversion}.tar.gz`,
     },
   };
 
@@ -180,7 +182,7 @@ export function bazel(version: string): MultiPlatform<Installable> {
 export function gradle(version: string): Installable {
   const url: DownloadFile = {
     url:
-      `https://downloads.gradle-dn.com/distributions/gradle-${version}-bin.zip`,
+    `https://services.gradle.org/distributions/gradle-${version}-bin.zip`,
     cachedName: `gradle-${version}-bin.zip`,
   }
 
@@ -188,7 +190,6 @@ export function gradle(version: string): Installable {
     addToPath(path.join(localdir,`gradle-${version}/bin`)),
   ])
 }
-
 
 // yarn installable
 export function yarn(version: string): Installable {
