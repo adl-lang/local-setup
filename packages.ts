@@ -368,3 +368,24 @@ export function dnit(version: string): Installable {
     `https://deno.land/x/dnit@dnit-v${version}/main.ts`,
   );
 }
+
+export function taskfile(version: string): MultiPlatform<Installable> {
+  const urls : MultiPlatform<DownloadFile> =
+  {
+    linux_x86_64: {
+      url: `https://github.com/go-task/task/releases/download/v${version}/task_linux_386.tar.gz`,
+      cachedName: `task_v${version}_linux_386.tar.gz`,
+    },
+    darwin_x86_64: {
+      url: `https://github.com/go-task/task/releases/download/v${version}/task_darwin_amd64.tar.gz`,
+      cachedName: `task_v${version}_darwin_amd64.tar.gz`,
+    },
+  };
+
+  return mapPlatform(urls, url => withEnv(tarPackage(url, '--gzip', `taskfile`), (localdir) => [
+    addToPath(path.join(localdir,`taskfile`)),
+    // todo add completion eg. add to local-env
+    // fpath+=`${localdir}/taskfile/completion/zsh`
+    // see https://taskfile.dev/installation/#setup-completions
+  ]));
+}
