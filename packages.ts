@@ -389,3 +389,53 @@ export function taskfile(version: string): MultiPlatform<Installable> {
     // see https://taskfile.dev/installation/#setup-completions
   ]));
 }
+
+export function bun(version: string): MultiPlatform<Installable> {
+  const urls: MultiPlatform<DownloadFile> =
+  {
+    linux_x86_64: {
+      url: `https://github.com/oven-sh/bun/releases/download/bun-v${version}/bun-linux-x64.zip`,
+      cachedName: `bun-${version}-linux-x64.zip`,
+    },
+    darwin_x86_64: {
+      url: `https://github.com/oven-sh/bun/releases/download/bun-v${version}/bun-darwin-x64.zip`,
+      cachedName: `bun-${version}-darwin-x64.zip`,
+    },
+    darwin_aarch64: {
+      url:
+        `https://github.com/oven-sh/bun/releases/download/bun-v${version}/bun-darwin-aarch64.zip`,
+      cachedName: `bun-${version}-darwin-aarch64.zip`,
+    },
+  };
+
+  function install(url: DownloadFile): Installable {
+    return {
+      manifestName: url.cachedName,
+      install: async (localdir: string): Promise<void> => {
+        const zipFile = await cachedDownload(url);
+        await unzip(zipFile, localdir);
+        if ( url.cachedName.endsWith("darwin-x64.zip") ) {
+          await fs.ensureSymlink(
+            path.join(localdir, "bun-darwin-x64/bun"),
+            path.join(localdir, "bin/bun"),
+          );
+        }
+        if ( url.cachedName.endsWith("darwin-aarch64.zip") ) {
+          await fs.ensureSymlink(
+            path.join(localdir, "bun-darwin-aarch64/bun"),
+            path.join(localdir, "bin/bun"),
+          );
+        }
+        if ( url.cachedName.endsWith("linux-x64.zip") ) {
+          await fs.ensureSymlink(
+            path.join(localdir, "bun-linux-x64/bun"),
+            path.join(localdir, "bin/bun"),
+          );
+        }
+      },
+      env: () => [],
+    }
+  }
+
+  return mapPlatform(urls, install);
+}
