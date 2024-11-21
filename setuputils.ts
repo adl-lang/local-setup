@@ -1,4 +1,4 @@
-import { readerFromStreamReader } from "@std/io";
+import * as io from "@std/io";
 import * as path from "@std/path";
 import * as fs from "@std/fs";
 
@@ -24,10 +24,10 @@ export interface Installable {
   manifestName: string;
 
   // The action to install it
-  install(localdir: String): Promise<void>;
+  install(localdir: string): Promise<void>;
 
   // Any environment variables upon which the installed thing depends.
-  env(localdir: String): EnvAction[];
+  env(localdir: string): EnvAction[];
 }
 
 type EnvAction 
@@ -184,7 +184,7 @@ export function tarPackage(
 /// Returns the users download cache directory, creating it if necessary
 export async function getDownloadCacheDir(): Promise<string> {
   let cachedir: string;
-  let homedir = Deno.env.get("HOME");
+  const homedir = Deno.env.get("HOME");
   if (homedir === undefined) {
     throw new Error("$HOME not defined");
   }
@@ -218,9 +218,9 @@ export async function cachedDownload(
     }
     const rdr = rsp.body?.getReader();
     if (rdr) {
-      const r = readerFromStreamReader(rdr);
+      const r = io.readerFromStreamReader(rdr);
       const f = await Deno.open(cachePath, { create: true, write: true });
-      await Deno.copy(r, f);
+      await io.copy(r, f);
       f.close();
     }
   }
@@ -231,22 +231,16 @@ export async function cachedDownload(
 export async function unzip(zippath: string, todir: string): Promise<void> {
   console.log(`unzipping ${zippath}`);
   await fs.ensureDir(todir);
-  const proc = Deno.run({
-    cmd: ["unzip", "-o", "-q", zippath, "-d", todir],
-  },
-  );
-  const status = await proc.status();
-  if (!status.success) {
-    throw new Error("Failed to run unzip");
-  }
+  await exec("unzip", ["-o", "-q", zippath, "-d", todir]);
 }
 
-/** Unzip a file to a directory */
-export async function exec(opt: Deno.RunOptions ): Promise<void> {
-  const proc = Deno.run(opt);
-  const status = await proc.status();
-  if (!status.success) {
-    throw new Error("Failed to run cmd");
+/** Run an command and check for success, ignoring output etc */
+export async function exec(cmd: string, args: string[]): Promise<void> {
+  const c = new Deno.Command(cmd, {args});
+  const {success, stderr} = await c.output();
+  if (!success) {
+    await Deno.stderr.write(stderr);
+    throw new Error(`Failed to run cmd: ${cmd} ${args.join(' ')}`);
   }
 }
 
@@ -256,13 +250,7 @@ type TarCompression = '--gzip' | '--xz';
 export async function untar(tarpath: string, todir: string, compression: TarCompression): Promise<void> {
   console.log(`untarring ${tarpath}`);
   await fs.ensureDir(todir);
-  const proc = Deno.run({
-    cmd: ["tar", "--extract", compression, "-f", tarpath, "--directory", todir],
-  });
-  const status = await proc.status();
-  if (!status.success) {
-    throw new Error("Failed to run unzip");
-  }
+  await exec("tar", ["--extract", compression, "-f", tarpath, "--directory", todir]);
 }
 
 
@@ -289,22 +277,15 @@ export async function unPackage(pkgpath: string, todir: string): Promise<void> {
   `;
   const choicesxmlpath = await Deno.makeTempFile({ suffix: ".xml" });
   await Deno.writeTextFile(choicesxmlpath, choicesxml);
-
-  const proc = Deno.run({
-    cmd: [
-      "installer",
+  await exec("installer", [
       "-pkg",
       pkgpath,
       "-target",
       "CurrentUserHomeDirectory",
       "-applyChoiceChangesXML",
       choicesxmlpath,
-    ],
-  });
-  const status = await proc.status();
-  if (!status.success) {
-    throw new Error("Failed to run unzip");
-  }
+    ]
+  );
 }
 
 export function envPathContainsLocalBin(localdir: string): boolean {
@@ -348,9 +329,7 @@ export async function denoInstall(
   url: string,
 ): Promise<void> {
   console.log(`installing ${url}`);
-  const proc = Deno.run({
-    cmd: [
-      "deno",
+  await exec("deno", [
       "install",
       "--quiet",
       "--allow-read",
@@ -363,12 +342,7 @@ export async function denoInstall(
       "--name",
       name,
       url,
-    ],
-  });
-  const status = await proc.status();
-  if (!status.success) {
-    throw new Error("Failed to deno install " + url);
-  }
+  ]);
 }
 
 export async function checkManifest(
@@ -401,8 +375,8 @@ export async function writeEnvScript(
   localdir: string,
 ): Promise<void> {
   const localenvpath = path.join(localdir, "bin/local-env.sh");
-  let lines: string[] = [];
-  let pathdirs: string[] = [];
+  const lines: string[] = [];
+  const pathdirs: string[] = [];
   for (const i of installs) {
     for (const action of i.env(localdir)) {
       switch (action.kind) {

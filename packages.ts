@@ -162,10 +162,7 @@ export function bazel(version: string): MultiPlatform<Installable> {
         const shellscript = await cachedDownload(url);
         console.log(`installing ${url.cachedName}`);
         const installdir = path.join(localdir, `bazel-${version}`)
-        await exec({
-          cmd: ['/bin/bash', shellscript, `--prefix=${installdir}`],
-          stdout: 'null'
-        })
+        await exec('/bin/bash', [shellscript, `--prefix=${installdir}`])
         await fs.ensureSymlink(
           path.join(installdir, "bin/bazel"),
           path.join(localdir, "bin/bazel"),

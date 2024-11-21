@@ -1,15 +1,17 @@
 #!/bin/bash
 # Configures tooling, downloading as required
 
+denoversion=2.0.6
+
 if [ -n "$ZSH_VERSION" ]; then
   # zsh is the default shell on osx
-  reporoot="$( cd -- "${0:a:h}/.." >/dev/null 2>&1 ; pwd -P )"
+  rootdir="$( cd -- "${0:a:h}" >/dev/null 2>&1 ; pwd -P )"
 else
    # assume Bash
-  reporoot="$( cd -- "$(dirname "$BASH_SOURCE")/.." >/dev/null 2>&1 ; pwd -P )"
+  rootdir="$( cd -- "$(dirname "$BASH_SOURCE")" >/dev/null 2>&1 ; pwd -P )"
 fi
 
-localdir=$reporoot/.local
+localdir=$rootdir/.local
 localbin=$localdir/bin
 
 pathadd() {
@@ -37,7 +39,6 @@ else
 fi
 
 #  Fetch deno if not already downloaded
-denoversion=1.34.1
 release=https://github.com/denoland/deno/releases/download/v$denoversion/deno-$arch.zip
 download=$cachedir/deno-v$denoversion-$arch.zip
 if [ ! -f "$download" ]; then
@@ -54,6 +55,6 @@ if [ ! -f "$localdir/bin/deno" ]; then
 fi
 
 # Now use a deno script to install all other local tooling
-deno run --quiet --allow-all $reporoot/deno/local-setup.ts $localdir
+deno run --quiet --allow-all $rootdir/local-setup.ts $denoversion $localdir
 source $localdir/bin/local-env.sh
 
