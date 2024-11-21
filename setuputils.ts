@@ -1,6 +1,6 @@
-import { readerFromStreamReader } from "https://deno.land/std@0.105.0/io/mod.ts";
-import * as path from "https://deno.land/std@0.105.0/path/mod.ts";
-import * as fs from "https://deno.land/std@0.105.0/fs/mod.ts";
+import { readerFromStreamReader } from "@std/io";
+import * as path from "@std/path";
+import * as fs from "@std/fs";
 
 // Variants of something that depends on platform
 export type MultiPlatform<T> = {
