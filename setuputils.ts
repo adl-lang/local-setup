@@ -1,6 +1,6 @@
-import * as io from "@std/io";
-import * as path from "@std/path";
-import * as fs from "@std/fs";
+import * as io from "jsr:@std/io";
+import * as path from "jsr:@std/path";
+import * as fs from "jsr:@std/fs";
 
 // Variants of something that depends on platform
 export type MultiPlatform<T> = {
