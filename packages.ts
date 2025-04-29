@@ -436,3 +436,27 @@ export function bun(version: string): MultiPlatform<Installable> {
 
   return mapPlatform(urls, install);
 }
+
+export function act(version: string): MultiPlatform<Installable> {
+  const urls: MultiPlatform<DownloadFile> = {
+    linux_x86_64: {
+      url: `https://github.com/nektos/act/releases/download/v${version}/act_Linux_x86_64.tar.gz`,
+      cachedName: `act_${version}_Linux_x86_64.tar.gz`,
+    },
+    darwin_x86_64: {
+      url: `https://github.com/nektos/act/releases/download/v${version}/act_Darwin_x86_64.tar.gz`,
+      cachedName: `act_${version}_Darwin_x86_64.tar.gz`,
+    },
+    darwin_aarch64: {
+      url: `https://github.com/nektos/act/releases/download/v${version}/act_Darwin_arm64.tar.gz`,
+      cachedName: `act_${version}_Darwin_arm64.tar.gz`,
+    },
+  };
+
+  return mapPlatform(urls, (url) => {
+    // act untars as a binary with a README and LICENSE which we preserve in a scoped folder
+    return withEnv(tarPackage(url, "--gzip", "act"), (localdir) => [
+      addToPath(path.join(localdir, "act")),
+    ]);
+  });
+}
