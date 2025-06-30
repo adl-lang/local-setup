@@ -436,3 +436,33 @@ export function bun(version: string): MultiPlatform<Installable> {
 
   return mapPlatform(urls, install);
 }
+
+// lefthook
+// there are gzipped available, but local-setup can't deal with those, so downloading binaries
+export function leftHook(version: string): MultiPlatform<Installable> {
+  const urls: Required<MultiPlatform<DownloadFile>> = {
+    linux_x86_64: {
+      url:
+        `https://github.com/evilmartians/lefthook/releases/download/v${version}/lefthook_${version}_Linux_x86_64`,
+      cachedName: `lefthook-bindist-linux_x86_64-${version}`,
+    },
+    darwin_x86_64: {
+      url:
+        `https://github.com/evilmartians/lefthook/releases/download/v${version}/lefthook_${version}_MacOS_x86_64`,
+      cachedName: `lefthook-bindist-darwin_x86_64-${version}`,
+    },
+    darwin_aarch64: {
+      url:
+        `https://github.com/evilmartians/lefthook/releases/download/v${version}/lefthook_${version}_MacOS_arm64`,
+      cachedName: `lefthook-bindist-darwin_aarch64-${version}`,
+    },
+  };
+  return {
+    linux_x86_64:
+      binary(urls.linux_x86_64, "lefthook"),
+    darwin_x86_64:
+      binary(urls.darwin_x86_64, "lefthook"),
+    darwin_aarch64:
+      binary(urls.darwin_aarch64, "lefthook"),
+  }
+}
