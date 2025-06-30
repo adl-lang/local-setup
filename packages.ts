@@ -1,5 +1,5 @@
-import * as path from "jsr:@std/path";
-import * as fs from "jsr:@std/fs";
+import * as path from "@std/path";
+import * as fs from "@std/fs";
 import {
   binary,
   cachedDownload,
