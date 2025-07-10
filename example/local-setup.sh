@@ -1,7 +1,7 @@
 #!/bin/bash
 # Configures tooling, downloading as required
 
-denoversion=2.0.6
+denoversion=2.1.1
 
 if [ -n "$ZSH_VERSION" ]; then
   # zsh is the default shell on osx
@@ -55,6 +55,6 @@ if [ ! -f "$localdir/bin/deno" ]; then
 fi
 
 # Now use a deno script to install all other local tooling
-deno run --quiet --allow-all $rootdir/local-setup.ts $denoversion $localdir
+$localdir/bin/deno run --quiet --allow-all $rootdir/local-setup.ts $denoversion $localdir
 source $localdir/bin/local-env.sh
 
