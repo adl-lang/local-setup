@@ -325,7 +325,7 @@ export function aws_vault(version: string): MultiPlatform<Installable> {
     // Irritatingly, we have different packaging on macos vs linux
     linux_x86_64: {
       manifestName: urls.linux_x86_64.cachedName,
-      install: binary(urls.linux_x86_64, 'aws-vault'),
+      install: binary(urls.linux_x86_64, 'aws-vault').install,
       env: () => [],
     },
     darwin_x86_64: {
@@ -337,9 +337,9 @@ export function aws_vault(version: string): MultiPlatform<Installable> {
       env: () => [],
     },
     darwin_aarch64: {
-      manifestName: urls.darwin_aarch64.cachedName,
+      manifestName: urls.darwin_aarch64!.cachedName,
       install: async (localdir: string): Promise<void> => {
-        const dmgfile = await cachedDownload(urls.darwin_aarch64);
+        const dmgfile = await cachedDownload(urls.darwin_aarch64!);
         await cpFromDmg(dmgfile, localdir);
       },
       env: () => [],
