@@ -313,11 +313,11 @@ export function aws_vault(version: string): MultiPlatform<Installable> {
     },
     darwin_x86_64: {
       url: `https://github.com/ByteNess/aws-vault/releases/download/v${version}/aws-vault-darwin-amd64`,
-      cachedName: `aws-vault-darwin-amd64-ByteNess${version}.dmg`,
+      cachedName: `aws-vault-darwin-amd64-ByteNess${version}`,
     },
     darwin_aarch64: {
       url: `https://github.com/ByteNess/aws-vault/releases/download/v${version}/aws-vault-darwin-arm64`,
-      cachedName: `aws-vault-darwin-arm64-ByteNess${version}.dmg`,
+      cachedName: `aws-vault-darwin-arm64-ByteNess${version}`,
     }
   };
 
