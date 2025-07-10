@@ -1,0 +1,18 @@
+
+services:
+  linux_dev:
+    platform: linux/amd64
+    build:
+      context: .
+      dockerfile: Dockerfile
+    # user: appuser:appuser
+    volumes:
+      - ../:/home/appuser
+      - dot_local:/home/appuser/example/.local
+      - dot_cache:/home/appuser/.cache
+
+volumes:
+  dot_local:
+    driver: local
+  dot_cache:
+    driver: local

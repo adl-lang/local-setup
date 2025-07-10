@@ -1,9 +1,12 @@
 #!/bin/bash
 # Configures tooling, downloading as required
 
+# set -eu
+# set -x
+
 denoversion=2.1.1
 
-if [ -n "$ZSH_VERSION" ]; then
+if [ -n "${ZSH_VERSION:-}" ]; then
   # zsh is the default shell on osx
   rootdir="$( cd -- "${0:a:h}" >/dev/null 2>&1 ; pwd -P )"
 else
