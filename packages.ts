@@ -304,6 +304,71 @@ export function awscli(version: string): MultiPlatform<Installable> {
   };
 }
 
+// AWS cli
+export function aws_vault(version: string): MultiPlatform<Installable> {
+  const urls: MultiPlatform<DownloadFile> = {
+    linux_x86_64: {
+      url: `https://github.com/99designs/aws-vault/releases/download/${version}/aws-vault-linux-amd64`,
+      cachedName: `aws-vault-linux-amd64-${version}`,
+    },
+    darwin_x86_64: {
+      url: `https://github.com/99designs/aws-vault/releases/download/${version}/aws-vault-darwin-amd64.dmg`,
+      cachedName: `aws-vault-darwin-amd64-${version}.dmg`,
+    },
+    darwin_aarch64: {
+      url: `https://github.com/99designs/aws-vault/releases/download/${version}/aws-vault-darwin-arm64.dmg`,
+      cachedName: `aws-vault-darwin-arm64-${version}.dmg`,
+    }
+  };
+
+  return {
+    // Irritatingly, we have different packaging on macos vs linux
+    linux_x86_64: {
+      manifestName: urls.linux_x86_64.cachedName,
+      install: binary(urls.linux_x86_64, 'aws-vault').install,
+      env: () => [],
+    },
+    darwin_x86_64: {
+      manifestName: urls.darwin_x86_64.cachedName,
+      install: async (localdir: string): Promise<void> => {
+        const dmgfile = await cachedDownload(urls.darwin_x86_64);
+        await cpFromDmg(dmgfile, localdir);
+      },
+      env: () => [],
+    },
+    darwin_aarch64: {
+      manifestName: urls.darwin_aarch64!.cachedName,
+      install: async (localdir: string): Promise<void> => {
+        const dmgfile = await cachedDownload(urls.darwin_aarch64!);
+        await cpFromDmg(dmgfile, localdir);
+      },
+      env: () => [],
+    },
+  };
+
+  async function cpFromDmg(dmgfile: string, localdir: string): Promise<void> {
+    console.log(`coping from dmg ${dmgfile}`);
+
+    // hdiutil attach {path_to_dmg} -mountpoint /Volumes/{mount_name}
+    await exec("hdiutil", [
+        "attach",
+        dmgfile,
+        "-mountpoint",
+        `/Volumes/aws-vault-${version}`,
+      ]
+    );
+    const target = path.join(localdir, "bin/aws-vault");
+    await Deno.copyFile(`/Volumes/aws-vault-${version}/aws-vault`, target);
+    await Deno.chmod(target, 0o755);
+    // hdiutil detach /Volumes/{mount_name}
+    await exec("hdiutil", [
+        "detach",
+        `/Volumes/aws-vault-${version}`,
+      ]
+    );
+  }
+}
+
 // for current versions see https://console.cloud.google.com/storage/browser/cloud-sdk-release;tab=objects?pageState=(%22StorageObjectListTable%22:(%22f%22:%22%255B%255D%22,%22s%22:%5B(%22i%22:%22objectListDisplayFields%2FtimeCreated%22,%22s%22:%221%22),(%22i%22:%22displayName%22,%22s%22:%220%22)%5D))&prefix=&forceOnObjectsSortingFiltering=true
 export function gcloud(version: string): MultiPlatform<Installable> {
   const urls : MultiPlatform<DownloadFile> =

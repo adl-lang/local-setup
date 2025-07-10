@@ -10,6 +10,7 @@ const NODE = packages.nodejs("22.11.0");
 const YARN = packages.yarn("1.22.22");
 const PNPM = packages.pnpm("9.14.2");
 const ADL = packages.adl("1.2.1");
+const AWSVAULT = packages.aws_vault("v7.2.0");
 
 export async function main() {
   if (Deno.args.length != 2) {
@@ -25,6 +26,7 @@ export async function main() {
 
   const installs = [
     forPlatform(DENO, platform),
+    forPlatform(AWSVAULT, platform),
     forPlatform(NODE, platform),
     forPlatform(ADL, platform),
     forPlatform(PNPM, platform),
