@@ -35,7 +35,7 @@ export function deno(version: string): MultiPlatform<Installable> {
     darwin_aarch64: {
       url:
         `https://github.com/denoland/deno/releases/download/v${version}/deno-aarch64-apple-darwin.zip`,
-      cachedName: `deno-v${version}-x86_64-apple-darwin.zip`,
+      cachedName: `deno-v${version}-aarch64-apple-darwin.zip`,
     },
   };
 
@@ -90,24 +90,20 @@ export function nodejs(version: string): MultiPlatform<Installable> {
 export function pnpm(version: string): MultiPlatform<Installable> {
   const urls: MultiPlatform<DownloadFile> = {
     linux_x86_64: {
-      url:
-        `https://github.com/pnpm/pnpm/releases/download/v${version}/pnpm-linux-x64`,
+      url: `https://github.com/pnpm/pnpm/releases/download/v${version}/pnpm-linux-x64`,
       cachedName: `pnpm-linux-x64.${version}`,
     },
     darwin_x86_64: {
-      url:
-        `https://github.com/pnpm/pnpm/releases/download/v${version}/pnpm-macos-x64`,
-        cachedName: `pnpm-darwin-x64.${version}`,
-      },
-    darwin_aarch64: {
-      url:
-        `https://github.com/pnpm/pnpm/releases/download/v${version}/pnpm-macos-arm64`,
-        cachedName: `pnpm-darwin-arm64.${version}`,
-      },
+      url: `https://github.com/pnpm/pnpm/releases/download/v${version}/pnpm-macos-x64`,
+      cachedName: `pnpm-darwin-x64.${version}`,
+    },
   };
 
   function install(url: DownloadFile) {
-    return binary(url, 'pnpm');
+    return withEnv(binary(url, "pnpm"), (localdir) => [
+      addToPath(path.join(localdir, "pnpm", "bin")),
+      setVariable("PNPM_HOME", path.join(localdir, "pnpm", "bin")),
+    ]);
   }
 
   return mapPlatform(urls, install);
@@ -129,12 +125,6 @@ export function adoptopenjdk(version: string): MultiPlatform<Installable> {
       cachedName: `OpenJDK${major}U-jdk_x64_mac_hotspot_${uversion}.tar.gz`,
     },
   };
-
-  function env(localdir: string) {
-    return [
-
-    ]
-  }
 
   return {
     linux_x86_64:
