@@ -35,7 +35,7 @@ export function deno(version: string): MultiPlatform<Installable> {
     darwin_aarch64: {
       url:
         `https://github.com/denoland/deno/releases/download/v${version}/deno-aarch64-apple-darwin.zip`,
-      cachedName: `deno-v${version}-x86_64-apple-darwin.zip`,
+      cachedName: `deno-v${version}-aarch64-apple-darwin.zip`,
     },
   };
 
