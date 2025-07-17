@@ -97,6 +97,10 @@ export function pnpm(version: string): MultiPlatform<Installable> {
       url: `https://github.com/pnpm/pnpm/releases/download/v${version}/pnpm-macos-x64`,
       cachedName: `pnpm-darwin-x64.${version}`,
     },
+    darwin_aarch64: {
+      url: `https://github.com/pnpm/pnpm/releases/download/v${version}/pnpm-macos-arm64`,
+      cachedName: `pnpm-darwin-arm64.${version}`,
+    }
   };
 
   function install(url: DownloadFile) {
