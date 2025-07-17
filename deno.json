@@ -1,6 +1,6 @@
 {
   "name": "@adllang/local-setup",
-  "version": "0.20.0",
+  "version": "0.21.0",
   "license": "BSD",
   "exports": "./mod.ts",
   "imports": {
