@@ -11,6 +11,7 @@ const YARN = packages.yarn("1.22.22");
 const PNPM = packages.pnpm("9.14.2");
 const ADL = packages.adl("1.2.1");
 const AWSVAULT = packages.aws_vault("7.5.2");
+const AWSSAM = packages.awssam("1.142.1");
 
 export async function main() {
   if (Deno.args.length != 2) {
@@ -25,6 +26,7 @@ export async function main() {
   const DENO = packages.deno(denoVersion);
 
   const installs = [
+    forPlatform(AWSSAM, platform),
     forPlatform(DENO, platform),
     forPlatform(AWSVAULT, platform),
     forPlatform(NODE, platform),
