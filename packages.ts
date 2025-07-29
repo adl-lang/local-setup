@@ -298,7 +298,7 @@ export function awscli(version: string): MultiPlatform<Installable> {
   };
 }
 
-// AWS cli
+// AWS vault
 export function aws_vault(version: string): MultiPlatform<Installable> {
   const urls: MultiPlatform<DownloadFile> = {
     linux_x86_64: {
@@ -355,6 +355,67 @@ export function aws_vault(version: string): MultiPlatform<Installable> {
   //     ]
   //   );
   // }
+}
+
+// AWS SAM cli
+// latest version 1.142.1
+export function awssam(version: string): MultiPlatform<Installable> {
+  const urls: MultiPlatform<DownloadFile> = {
+    linux_x86_64: {
+      url: `https://github.com/aws/aws-sam-cli/releases/download/v${version}/aws-sam-cli-linux-x86_64.zip`,
+      cachedName: `aws-sam-cli-linux-x86_64-${version}.zip`,
+    },
+    darwin_x86_64: {
+      url: `https://github.com/aws/aws-sam-cli/releases/download/v${version}/aws-sam-cli-macos-x86_64.pkg`,
+      cachedName: `aws-sam-cli-macos-x86_64-${version}.pkg`,
+    },
+    darwin_aarch64: {
+      url: `https://github.com/aws/aws-sam-cli/releases/download/v${version}/aws-sam-cli-macos-arm64.pkg`,
+      cachedName: `aws-sam-cli-macos-arm64-${version}.pkg`,
+    },
+
+    // 
+  };
+
+  return {
+    // Irritatingly, we have different packaging on macos vs linux
+    linux_x86_64: {
+      manifestName: urls.linux_x86_64.cachedName,
+      install: async (localdir: string): Promise<void> => {
+        const zipfile = await cachedDownload(urls.linux_x86_64);
+        await unzip(zipfile, path.join(localdir, "lib/aws-sam"));
+        await fs.ensureSymlink(
+          path.join(localdir, "lib/aws-sam/dist/sam"),
+          path.join(localdir, "bin/sam"),
+        );
+      },
+      env: () => [],
+    },
+    darwin_x86_64: {
+      manifestName: urls.darwin_x86_64.cachedName,
+      install: async (localdir: string): Promise<void> => {
+        const pkgfile = await cachedDownload(urls.darwin_x86_64);
+        await unPackage(pkgfile, path.join(localdir, "lib"));
+        await fs.ensureSymlink(
+          path.join(localdir, "lib/aws-sam-cli/sam"),
+          path.join(localdir, "bin/sam"),
+        );
+      },
+      env: () => [],
+    },
+    darwin_aarch64: {
+      manifestName: urls.darwin_aarch64!.cachedName,
+      install: async (localdir: string): Promise<void> => {
+        const pkgfile = await cachedDownload(urls.darwin_aarch64!);
+        await unPackage(pkgfile, path.join(localdir, "lib"));
+        await fs.ensureSymlink(
+          path.join(localdir, "lib/aws-sam-cli/sam"),
+          path.join(localdir, "bin/sam"),
+        );
+      },
+      env: () => [],
+    }
+  };
 }
 
 // for current versions see https://console.cloud.google.com/storage/browser/cloud-sdk-release;tab=objects?pageState=(%22StorageObjectListTable%22:(%22f%22:%22%255B%255D%22,%22s%22:%5B(%22i%22:%22objectListDisplayFields%2FtimeCreated%22,%22s%22:%221%22),(%22i%22:%22displayName%22,%22s%22:%220%22)%5D))&prefix=&forceOnObjectsSortingFiltering=true
