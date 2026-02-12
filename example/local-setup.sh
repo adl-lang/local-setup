@@ -60,4 +60,3 @@ fi
 # Now use a deno script to install all other local tooling
 $localdir/bin/deno run --quiet --allow-all $rootdir/local-setup.ts $denoversion $localdir
 source $localdir/bin/local-env.sh
-

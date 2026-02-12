@@ -1,0 +1,48 @@
+# Notes:
+# if you want to find the cmd being run use
+#   'prek -vvv' and look for 'Resolved command' or 'Executing'
+
+# fail_fast = true
+
+[[repos]]
+repo = "https://github.com/pre-commit/pre-commit-hooks"
+rev = "v6.0.0"
+hooks = [
+  { id = "trailing-whitespace" },
+  { id = "end-of-file-fixer" },
+  { id = "check-yaml" },
+  { id = "check-added-large-files" }
+]
+
+[[repos]]
+repo = "builtin"
+hooks = [
+  { id = "trailing-whitespace" },
+  { id = "mixed-line-ending" },
+  { id = "check-yaml" },
+  { id = "check-toml" },
+  { id = "end-of-file-fixer" },
+  { id = "check-symlinks" },
+  { id = "check-merge-conflict" },
+  { id = "detect-private-key" },
+  {
+    id = "no-commit-to-branch",
+    args = ["--branch", "main"]
+  },
+  { id = "check-executables-have-shebangs" },
+]
+
+[[repos]]
+repo = "https://github.com/crate-ci/typos"
+rev = "v1.42.3"
+hooks = [
+  # if there is not args the default is --write-changes.
+  # Use 'args = []' if you don't want --write-changes, even if you want the other defaults
+  {
+    id = "typos",
+    args = [
+      "--format", "brief",
+      # using force-exclude so the extend-exclude in the .typos.toml are respected
+      "--force-exclude",
+    ] }
+]
