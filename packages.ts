@@ -616,3 +616,34 @@ export function leftHook(version: string): MultiPlatform<Installable> {
   }
 }
 
+// prek - a better pre-commit.com, arguably a better lefthook
+export function prek(version: string): MultiPlatform<Installable> {
+  const urls: MultiPlatform<DownloadFile> = {
+    linux_x86_64: {
+      url:
+        `https://github.com/j178/prek/releases/download/v${version}/prek-x86_64-unknown-linux-gnu.tar.gz`,
+      cachedName: `prek-x86_64-unknown-linux-gnu-${version}.tar.gz`,
+    },
+    darwin_aarch64: {
+      url:
+        `https://github.com/j178/prek/releases/download/v${version}/prek-aarch64-apple-darwin.tar.gz`,
+      cachedName: `prek-aarch64-apple-darwin-${version}.tar.gz`,
+    },
+    darwin_x86_64: {
+      url:
+        `https://github.com/j178/prek/releases/download/v${version}/prek-x86_64-apple-darwin.tar.gz`,
+      cachedName: `prek-x86_64-apple-darwin-${version}.tar.gz`,
+    },
+  };
+  return {
+    linux_x86_64: withEnv(tarPackage(urls.linux_x86_64, '--gzip'), (localdir) => [
+      addToPath(path.join(localdir,`prek-x86_64-unknown-linux-gnu`)),
+    ]),
+    darwin_x86_64: withEnv(tarPackage(urls.darwin_x86_64, '--gzip'), (localdir) => [
+      addToPath(path.join(localdir,`prek-x86_64-apple-darwin`)),
+    ]),
+    darwin_aarch64: urls.darwin_aarch64 ? withEnv(tarPackage(urls.darwin_aarch64, '--gzip'), (localdir) => [
+      addToPath(path.join(localdir,`prek-aarch64-apple-darwin`)),
+    ]) : undefined,
+  }
+}

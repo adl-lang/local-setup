@@ -1,0 +1,7 @@
+[files]
+extend-exclude = [
+  "thirdparty/code/dir",
+]
+
+[default.extend-words]
+"wrk" = "wrk"
